@@ -15,14 +15,14 @@ import (
 
 // Config represents the configuration used to create a new kubeconfig library instance.
 type Config struct {
-	micrologger.Logger
-	rest.Config
+	RestConfig rest.Config
+	Logger     micrologger.Logger
 }
 
 // TenantCluster provides functionality for connecting to tenant clusters.
 type KubeConfig struct {
 	logger     micrologger.Logger
-	restConfig rest.Config
+	restConfig *rest.Config
 }
 
 // New creates a new tenant cluster service.
@@ -30,13 +30,13 @@ func New(config Config) (*KubeConfig, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-	if config.Config == nil {
+	if &config.RestConfig == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Config must not be empty", config)
 	}
 
 	g := &KubeConfig{
 		logger:     config.Logger,
-		restConfig: config.Config,
+		restConfig: rest.CopyConfig(&config.RestConfig),
 	}
 
 	return g, nil
@@ -72,11 +72,7 @@ func (k KubeConfig) NewK8sClientFromSecret(ctx context.Context, secretName, secr
 
 // getRESTConfigFromSecret returns Kubernetes REST config based on the specified secret kubeconfig information.
 func (k KubeConfig) getRESTConfigFromSecret(ctx context.Context, secretName, secretNamespace string) (*rest.Config, error) {
-	config, err := rest.InClusterConfig()
-	if err != nil {
-		return nil, microerror.Maskf(err, "rest.InClusterConfig")
-	}
-	clientset, err := kubernetes.NewForConfig(config)
+	clientset, err := kubernetes.NewForConfig(k.restConfig)
 	if err != nil {
 		return nil, microerror.Maskf(err, "kubernetes.NewForConfig")
 	}
