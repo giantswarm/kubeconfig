@@ -17,13 +17,13 @@ import (
 type Config struct {
 	RestConfig rest.Config
 	Logger     micrologger.Logger
-	K8sClient  *kubernetes.Clientset
+	K8sClient  kubernetes.Interface
 }
 
 // TenantCluster provides functionality for connecting to tenant clusters.
 type KubeConfig struct {
 	logger    micrologger.Logger
-	k8sClient *kubernetes.Clientset
+	k8sClient kubernetes.Interface
 }
 
 // New creates a new tenant cluster service.
@@ -31,7 +31,7 @@ func New(config Config) (*KubeConfig, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-	if &config.K8sClient == nil {
+	if config.K8sClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
 	}
 
