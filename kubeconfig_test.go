@@ -61,7 +61,7 @@ func TestKubeConfig_getRESTConfigFromSecret(t *testing.T) {
 						Namespace: metav1.NamespaceNone,
 					},
 					Data: map[string][]byte{
-						"kubeConfig": loadingConfig("testdata/config"),
+						"kubeConfig": []byte("test"),
 					},
 				},
 			},
@@ -81,7 +81,7 @@ func TestKubeConfig_getRESTConfigFromSecret(t *testing.T) {
 				logger:    microloggertest.New(),
 				k8sClient: fake.NewSimpleClientset(objs...),
 			}
-			_, err := k.getRESTConfigFromSecret(nil, "kubeconfig-secret-gs", "")
+			_, err := k.getKubeConfigFromSecret(nil, "kubeconfig-secret-gs", "")
 
 			switch {
 			case err != nil && tc.errorMatcher == nil:

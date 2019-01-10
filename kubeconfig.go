@@ -9,7 +9,6 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -44,48 +43,53 @@ func New(config Config) (*KubeConfig, error) {
 
 // NewG8sClientFromSecret returns a generated clientset based on the kubeconfig stored in a secret.
 func (k KubeConfig) NewG8sClientFromSecret(ctx context.Context, secretName, secretNamespace string) (versioned.Interface, error) {
-	restConfig, err := k.getRESTConfigFromSecret(ctx, secretName, secretNamespace)
+	kubeConfig, err := k.getKubeConfigFromSecret(ctx, secretName, secretNamespace)
+	if err != nil {
+		return nil, err
+	}
+
+	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
 	if err != nil {
 		return nil, err
 	}
 
 	client, err := versioned.NewForConfig(restConfig)
 	if err != nil {
-		return nil, microerror.Maskf(err, "versioned.NewForConfig")
+		return nil, err
 	}
 	return client, nil
 }
 
 // NewK8sClientFromSecret returns a Kubernetes clientset based on the kubeconfig stored in a secret.
 func (k KubeConfig) NewK8sClientFromSecret(ctx context.Context, secretName, secretNamespace string) (kubernetes.Interface, error) {
-	restConfig, err := k.getRESTConfigFromSecret(ctx, secretName, secretNamespace)
+	kubeConfig, err := k.getKubeConfigFromSecret(ctx, secretName, secretNamespace)
+	if err != nil {
+		return nil, err
+	}
+	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
 	if err != nil {
 		return nil, err
 	}
 
 	client, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
-		return nil, microerror.Mask(err)
+		return nil, err
 	}
 	return client, nil
 }
 
-// getRESTConfigFromSecret returns Kubernetes REST config based on the specified secret kubeconfig information.
-func (k KubeConfig) getRESTConfigFromSecret(ctx context.Context, secretName, secretNamespace string) (*rest.Config, error) {
+// getKubeConfigFromSecret returns KubeConfig bytes based on the specified secret information.
+func (k KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, secretNamespace string) ([]byte, error) {
 	secret, err := k.k8sClient.CoreV1().Secrets(secretNamespace).Get(secretName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
-		return nil, microerror.Maskf(err, "secret namespace: %v, name: %v not found", secretNamespace, secretName)
-	} else if statusError, isStatus := err.(*errors.StatusError); isStatus {
-		return nil, microerror.Maskf(err, "error getting secret %v", statusError.ErrStatus.Message)
+		return nil, err
+	} else if _, isStatus := err.(*errors.StatusError); isStatus {
+		return nil, err
 	} else if err != nil {
-		return nil, microerror.Maskf(err, "unknown error")
+		return nil, err
 	}
 	if bytes, ok := secret.Data["kubeConfig"]; ok {
-		restConfig, err := clientcmd.RESTConfigFromKubeConfig(bytes)
-		if err != nil {
-			return nil, microerror.Maskf(err, "clientcmd.RESTConfigFromKubeConfig")
-		}
-		return restConfig, nil
+		return bytes, nil
 	} else {
 		return nil, missingKubeConfigError
 	}
