@@ -57,7 +57,7 @@ func (k KubeConfig) NewG8sClientFromSecret(ctx context.Context, secretName, secr
 	return client, nil
 }
 
-// NewK8sClientFromSecret returns a Kubernetes clientset based on the secret kubeconfig information.
+// NewK8sClientFromSecret returns a Kubernetes clientset based on the kubeconfig stored in a secret.
 func (k KubeConfig) NewK8sClientFromSecret(ctx context.Context, secretName, secretNamespace string) (kubernetes.Interface, error) {
 	restConfig, err := k.getRESTConfigFromSecret(ctx, secretName, secretNamespace)
 	if err != nil {
