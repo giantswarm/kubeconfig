@@ -15,9 +15,8 @@ import (
 
 // Config represents the configuration used to create a new kubeconfig library instance.
 type Config struct {
-	RestConfig rest.Config
-	Logger     micrologger.Logger
-	K8sClient  kubernetes.Interface
+	Logger    micrologger.Logger
+	K8sClient kubernetes.Interface
 }
 
 // TenantCluster provides functionality for connecting to tenant clusters.
@@ -52,7 +51,7 @@ func (k KubeConfig) NewG8sClientFromSecret(ctx context.Context, secretName, secr
 
 	client, err := versioned.NewForConfig(restConfig)
 	if err != nil {
-		return nil, microerror.Maskf(err, "rest.RESTClientFor")
+		return nil, microerror.Maskf(err, "versioned.NewForConfig")
 	}
 	return client, nil
 }
@@ -66,7 +65,7 @@ func (k KubeConfig) NewK8sClientFromSecret(ctx context.Context, secretName, secr
 
 	client, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
-		return nil, microerror.Maskf(err, "kubernetes.RESTClientFor")
+		return nil, microerror.Mask(err)
 	}
 	return client, nil
 }
