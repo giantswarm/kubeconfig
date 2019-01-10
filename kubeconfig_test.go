@@ -1,7 +1,6 @@
 package kubeconfig
 
 import (
-	"io/ioutil"
 	"testing"
 
 	"github.com/giantswarm/microerror"
@@ -94,12 +93,4 @@ func TestKubeConfig_getRESTConfigFromSecret(t *testing.T) {
 		})
 
 	}
-}
-
-func loadingConfig(filepath string) []byte {
-	bytes, err := ioutil.ReadFile(filepath)
-	if err != nil {
-		panic(err)
-	}
-	return bytes
 }
