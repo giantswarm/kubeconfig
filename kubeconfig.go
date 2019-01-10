@@ -87,6 +87,6 @@ func (k KubeConfig) getRESTConfigFromSecret(ctx context.Context, secretName, sec
 		}
 		return restConfig, nil
 	} else {
-		return nil, microerror.New("secret object do not contain kubeConfig key")
+		return nil, missingKubeConfigError
 	}
 }
