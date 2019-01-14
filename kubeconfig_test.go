@@ -48,7 +48,7 @@ func TestKubeConfig_getRESTConfigFromSecret(t *testing.T) {
 					},
 				},
 			},
-			errorMatcher: IsMissingKubeConfigError,
+			errorMatcher: IsNotFoundError,
 		},
 		{
 			name: "case 3: secret found and no error",

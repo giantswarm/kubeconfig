@@ -18,13 +18,13 @@ type Config struct {
 	K8sClient kubernetes.Interface
 }
 
-// TenantCluster provides functionality for connecting to tenant clusters.
+// KubeConfig provides functionality for connecting to tenant clusters based on the specified secret information.
 type KubeConfig struct {
 	logger    micrologger.Logger
 	k8sClient kubernetes.Interface
 }
 
-// New creates a new tenant cluster service.
+// New creates a new KubeConfig service.
 func New(config Config) (*KubeConfig, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
@@ -91,6 +91,6 @@ func (k KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, sec
 	if bytes, ok := secret.Data["kubeConfig"]; ok {
 		return bytes, nil
 	} else {
-		return nil, missingKubeConfigError
+		return nil, notFoundError
 	}
 }

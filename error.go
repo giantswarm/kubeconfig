@@ -6,11 +6,16 @@ var invalidConfigError = &microerror.Error{
 	Kind: "invalidConfigError",
 }
 
-var missingKubeConfigError = &microerror.Error{
+// IsInvalidConfigError asserts invalidConfigError.
+func IsInvalidConfigError(err error) bool {
+	return microerror.Cause(err) == invalidConfigError
+}
+
+var notFoundError = &microerror.Error{
 	Kind: "missingKubeConfigError",
 }
 
-// IsMissingKubeConfigError asserts missingKubeConfigError.
-func IsMissingKubeConfigError(err error) bool {
-	return microerror.Cause(err) == missingKubeConfigError
+// IsNotFoundError asserts notFoundError.
+func IsNotFoundError(err error) bool {
+	return microerror.Cause(err) == notFoundError
 }
