@@ -122,11 +122,3 @@ func (k KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, sec
 		return nil, notFoundError
 	}
 }
-
-func secretName(app v1alpha1.App) string {
-	return app.Spec.KubeConfig.Secret.Name
-}
-
-func secretNamespace(app v1alpha1.App) string {
-	return app.Spec.KubeConfig.Secret.Namespace
-}
