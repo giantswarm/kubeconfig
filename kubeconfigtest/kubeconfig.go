@@ -34,7 +34,7 @@ func New(config Config) kubeconfig.Interface {
 	return k
 }
 
-func (k *KubeConfig) NewG8sClientFromApp(ctx context.Context, app v1alpha1.App) (versioned.Interface, error) {
+func (k *KubeConfig) NewG8sClientForApp(ctx context.Context, app v1alpha1.App) (versioned.Interface, error) {
 	if k.g8sClientFromAppError != nil {
 		return nil, k.g8sClientFromAppError
 	}
@@ -42,7 +42,7 @@ func (k *KubeConfig) NewG8sClientFromApp(ctx context.Context, app v1alpha1.App) 
 	return k.g8sClient, nil
 }
 
-func (k *KubeConfig) NewK8sClientFromApp(ctx context.Context, app v1alpha1.App) (kubernetes.Interface, error) {
+func (k *KubeConfig) NewK8sClientForApp(ctx context.Context, app v1alpha1.App) (kubernetes.Interface, error) {
 	if k.k8sClientFromAppError != nil {
 		return nil, k.k8sClientFromAppError
 	}

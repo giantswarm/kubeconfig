@@ -9,13 +9,13 @@ import (
 )
 
 type Interface interface {
-	// NewG8sClientFromApp returns a generated clientset for the cluster configured
+	// NewG8sClientForApp returns a generated clientset for the cluster configured
 	// in the kubeconfig section of the app CR. If this is empty a clientset for
 	// the current cluster is returned.
-	NewG8sClientFromApp(ctx context.Context, app v1alpha1.App) (versioned.Interface, error)
+	NewG8sClientForApp(ctx context.Context, app v1alpha1.App) (versioned.Interface, error)
 
-	// NewK8sClientFromApp returns a Kubernetes clientset for the cluster configured
+	// NewK8sClientForApp returns a Kubernetes clientset for the cluster configured
 	// in the kubeconfig section of the app CR. If this is empty a clientset for
 	// the current cluster is returned.
-	NewK8sClientFromApp(ctx context.Context, app v1alpha1.App) (kubernetes.Interface, error)
+	NewK8sClientForApp(ctx context.Context, app v1alpha1.App) (kubernetes.Interface, error)
 }
