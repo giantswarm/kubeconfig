@@ -13,14 +13,16 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-// Config represents the configuration used to create a new kubeconfig library instance.
+// Config represents the configuration used to create a new kubeconfig library
+// instance.
 type Config struct {
 	G8sClient versioned.Interface
 	Logger    micrologger.Logger
 	K8sClient kubernetes.Interface
 }
 
-// KubeConfig provides functionality for connecting to tenant clusters based on the specified secret information.
+// KubeConfig provides functionality for connecting to remote clusters based on
+// the specified kubeconfig.
 type KubeConfig struct {
 	g8sClient versioned.Interface
 	logger    micrologger.Logger
@@ -91,6 +93,7 @@ func (k KubeConfig) NewK8sClientForApp(ctx context.Context, app v1alpha1.App) (k
 	if err != nil {
 		return nil, err
 	}
+
 	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
 	if err != nil {
 		return nil, err
