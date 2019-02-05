@@ -10,6 +10,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -55,18 +56,14 @@ func New(config Config) (*KubeConfig, error) {
 // the current cluster is returned.
 func (k KubeConfig) NewG8sClientForApp(ctx context.Context, app v1alpha1.App) (versioned.Interface, error) {
 	secretName := secretName(app)
+	secretNamespace := secretNamespace(app)
 
 	// KubeConfig is not configured so connect to current cluster.
 	if secretName == "" {
 		return k.g8sClient, nil
 	}
 
-	kubeConfig, err := k.getKubeConfigFromSecret(ctx, secretName, secretNamespace(app))
-	if err != nil {
-		return nil, err
-	}
-
-	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
+	restConfig, err := k.NewRESTConfigForApp(ctx, secretName, secretNamespace)
 	if err != nil {
 		return nil, err
 	}
@@ -83,18 +80,14 @@ func (k KubeConfig) NewG8sClientForApp(ctx context.Context, app v1alpha1.App) (v
 // the current cluster is returned.
 func (k KubeConfig) NewK8sClientForApp(ctx context.Context, app v1alpha1.App) (kubernetes.Interface, error) {
 	secretName := secretName(app)
+	secretNamespace := secretNamespace(app)
 
 	// KubeConfig is not configured so connect to current cluster.
 	if secretName == "" {
 		return k.k8sClient, nil
 	}
 
-	kubeConfig, err := k.getKubeConfigFromSecret(ctx, secretName, secretNamespace(app))
-	if err != nil {
-		return nil, err
-	}
-
-	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
+	restConfig, err := k.NewRESTConfigForApp(ctx, secretName, secretNamespace)
 	if err != nil {
 		return nil, err
 	}
@@ -104,6 +97,19 @@ func (k KubeConfig) NewK8sClientForApp(ctx context.Context, app v1alpha1.App) (k
 		return nil, err
 	}
 	return client, nil
+}
+
+func (k KubeConfig) NewRESTConfigForApp(ctx context.Context, secretName, secretNamespace string) (*restclient.Config, error) {
+	kubeConfig, err := k.getKubeConfigFromSecret(ctx, secretName, secretNamespace)
+	if err != nil {
+		return nil, err
+	}
+
+	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
+	if err != nil {
+		return nil, err
+	}
+	return restConfig, err
 }
 
 // getKubeConfigFromSecret returns KubeConfig bytes based on the specified secret information.
