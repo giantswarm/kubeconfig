@@ -2,6 +2,7 @@ package kubeconfig
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/apiextensions/pkg/clientset/versioned"
@@ -89,7 +90,7 @@ func (k KubeConfig) NewK8sClientForApp(ctx context.Context, app v1alpha1.App) (k
 
 	restConfig, err := k.NewRESTConfigForApp(ctx, secretName, secretNamespace)
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	client, err := kubernetes.NewForConfig(restConfig)
@@ -102,25 +103,25 @@ func (k KubeConfig) NewK8sClientForApp(ctx context.Context, app v1alpha1.App) (k
 func (k KubeConfig) NewRESTConfigForApp(ctx context.Context, secretName, secretNamespace string) (*restclient.Config, error) {
 	kubeConfig, err := k.getKubeConfigFromSecret(ctx, secretName, secretNamespace)
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
-	return restConfig, err
+	return restConfig, nil
 }
 
 // getKubeConfigFromSecret returns KubeConfig bytes based on the specified secret information.
 func (k KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, secretNamespace string) ([]byte, error) {
 	secret, err := k.k8sClient.CoreV1().Secrets(secretNamespace).Get(secretName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
-		return nil, err
+		return nil, microerror.Maskf(err, fmt.Sprintf("can't find the secretName: %#q, ns: %#q", secretName, secretNamespace), notFoundError)
 	} else if _, isStatus := err.(*errors.StatusError); isStatus {
-		return nil, err
+		return nil, microerror.Mask(err)
 	} else if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 	if bytes, ok := secret.Data["kubeConfig"]; ok {
 		return bytes, nil
