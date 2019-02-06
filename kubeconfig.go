@@ -63,12 +63,12 @@ func (k *KubeConfig) NewG8sClientForApp(ctx context.Context, app v1alpha1.App) (
 
 	restConfig, err := k.NewRESTConfigForApp(ctx, app)
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	client, err := versioned.NewForConfig(restConfig)
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 	return client, nil
 }
@@ -89,7 +89,7 @@ func (k *KubeConfig) NewK8sClientForApp(ctx context.Context, app v1alpha1.App) (
 
 	client, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 	return client, nil
 }
