@@ -123,6 +123,6 @@ func (k *KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, se
 	if bytes, ok := secret.Data["kubeConfig"]; ok {
 		return bytes, nil
 	} else {
-		return nil, notFoundError
+		return nil, microerror.Mask(notFoundError)
 	}
 }
