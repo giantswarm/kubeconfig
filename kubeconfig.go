@@ -123,6 +123,6 @@ func (k *KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, se
 	if bytes, ok := secret.Data["kubeConfig"]; ok {
 		return bytes, nil
 	} else {
-		return nil, microerror.Mask(notFoundError)
+		return nil, microerror.Maskf(notFoundError, "Secret %#q in Namespace %#q does not have kubeConfig key in its data", secretName, secretNamespace)
 	}
 }
