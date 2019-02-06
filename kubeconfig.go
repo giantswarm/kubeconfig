@@ -114,7 +114,7 @@ func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, app v1alpha1.App) 
 func (k *KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, secretNamespace string) ([]byte, error) {
 	secret, err := k.k8sClient.CoreV1().Secrets(secretNamespace).Get(secretName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
-		return nil, microerror.Maskf(err, fmt.Sprintf("can't find the secretName: %#q, ns: %#q", secretName, secretNamespace), notFoundError)
+		return nil, microerror.Maskf(notFoundError, "Secret %#q in Namespace %#q", secretName, secretNamespace)
 	} else if _, isStatus := err.(*errors.StatusError); isStatus {
 		return nil, microerror.Mask(err)
 	} else if err != nil {
