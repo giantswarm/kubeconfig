@@ -2,6 +2,7 @@ package kubeconfigtest
 
 import (
 	"context"
+	"k8s.io/client-go/rest"
 
 	"github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/apiextensions/pkg/clientset/versioned"
@@ -10,25 +11,31 @@ import (
 )
 
 type Config struct {
-	G8sClient             versioned.Interface
-	G8sClientFromAppError error
-	K8sClient             kubernetes.Interface
-	K8sClientFromAppError error
+	G8sClient              versioned.Interface
+	G8sClientFromAppError  error
+	K8sClient              kubernetes.Interface
+	K8sClientFromAppError  error
+	RestConfig             rest.Config
+	RestConfigFromAppError error
 }
 
 type KubeConfig struct {
-	g8sClient             versioned.Interface
-	g8sClientFromAppError error
-	k8sClient             kubernetes.Interface
-	k8sClientFromAppError error
+	g8sClient              versioned.Interface
+	g8sClientFromAppError  error
+	k8sClient              kubernetes.Interface
+	k8sClientFromAppError  error
+	restConfig             rest.Config
+	restConfigFromAppError error
 }
 
 func New(config Config) kubeconfig.Interface {
 	k := &KubeConfig{
-		g8sClient:             config.G8sClient,
-		g8sClientFromAppError: config.G8sClientFromAppError,
-		k8sClient:             config.K8sClient,
-		k8sClientFromAppError: config.K8sClientFromAppError,
+		g8sClient:              config.G8sClient,
+		g8sClientFromAppError:  config.G8sClientFromAppError,
+		k8sClient:              config.K8sClient,
+		k8sClientFromAppError:  config.K8sClientFromAppError,
+		restConfig:             config.RestConfig,
+		restConfigFromAppError: config.RestConfigFromAppError,
 	}
 
 	return k
@@ -48,4 +55,12 @@ func (k *KubeConfig) NewK8sClientForApp(ctx context.Context, app v1alpha1.App) (
 	}
 
 	return k.k8sClient, nil
+}
+
+func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, app v1alpha1.App) (*rest.Config, error) {
+	if k.restConfigFromAppError != nil {
+		return nil, k.restConfigFromAppError
+	}
+
+	return &k.restConfig, nil
 }
