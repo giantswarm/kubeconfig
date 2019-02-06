@@ -2,7 +2,6 @@ package kubeconfig
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/apiextensions/pkg/clientset/versioned"
