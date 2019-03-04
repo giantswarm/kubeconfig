@@ -1,10 +1,12 @@
 package kubeconfig
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger/microloggertest"
+	"github.com/google/go-cmp/cmp"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -91,5 +93,91 @@ func TestKubeConfig_getRESTConfigFromSecret(t *testing.T) {
 			}
 		})
 
+	}
+}
+
+func TestKubeConfig_Unmarshal(t *testing.T) {
+	testCases := []struct {
+		name                 string
+		bytes                []byte
+		matchKubeConfigValue KubeConfigValue
+		errorMatcher         func(error) bool
+	}{
+		{
+			name: "case 1: unmarshal kubeconfig",
+			bytes: []byte(`
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /workdir/.minikube/ca.crt
+    server: https://10.142.5.51:8443
+  name: minikube
+contexts:
+- context:
+    cluster: minikube
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: minikube
+  user:
+    client-certificate: /workdir/.minikube/client.crt
+    client-key: /workdir/.minikube/client.key
+`),
+			matchKubeConfigValue: KubeConfigValue{
+				APIVersion: "v1",
+				Kind:       "Config",
+				Clusters: []KubeconfigNamedCluster{
+					{
+						Name: "minikube",
+						Cluster: KubeconfigCluster{
+							Server: "https://10.142.5.51:8443",
+						},
+					},
+				},
+				Users: []KubeconfigUser{
+					{
+						Name: "minikube",
+						User: KubeconfigUserKeyPair{
+							ClientCertificateData: "/workdir/.minikube/client.crt",
+							ClientKeyData:         "/workdir/.minikube/client.key",
+						},
+					},
+				},
+				Contexts: []KubeconfigNamedContext{
+					{
+						Name: "minikube",
+						Context: KubeconfigContext{
+							Cluster: "minikube",
+							User:    "minikube",
+						},
+					},
+				},
+				CurrentContext: "minikube",
+			},
+			errorMatcher: nil,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+
+			result, err := Unmarshal(tc.bytes)
+
+			switch {
+			case err != nil && tc.errorMatcher == nil:
+				t.Fatalf("error == %#v, want nil", err)
+			case err == nil && tc.errorMatcher != nil:
+				t.Fatalf("error == nil, want non-nil")
+			case tc.errorMatcher != nil && !tc.errorMatcher(microerror.Cause(err)):
+				t.Fatalf("error == %#v, want matching", err)
+			}
+
+			if !reflect.DeepEqual(tc.matchKubeConfigValue, *result) {
+				t.Fatalf("want matching kubeconfig value \n %s", cmp.Diff(*result, tc.matchKubeConfigValue))
+			}
+		})
 	}
 }
