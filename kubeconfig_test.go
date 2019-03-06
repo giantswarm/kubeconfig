@@ -11,6 +11,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/fake"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 func TestKubeConfig_getRESTConfigFromSecret(t *testing.T) {
@@ -179,5 +180,54 @@ users:
 				t.Fatalf("want matching kubeconfig value \n %s", cmp.Diff(*result, tc.matchKubeConfigValue))
 			}
 		})
+	}
+}
+
+func TestKubeConfig_Marshal(t *testing.T) {
+	matchKubeConfigValue := KubeConfigValue{
+		APIVersion: "v1",
+		Kind:       "Config",
+		Clusters: []KubeconfigNamedCluster{
+			{
+				Name: "minikube",
+				Cluster: KubeconfigCluster{
+					Server: "https://10.142.5.51:8443",
+				},
+			},
+		},
+		Users: []KubeconfigUser{
+			{
+				Name: "minikube",
+				User: KubeconfigUserKeyPair{
+					ClientCertificateData: "src/client.crt",
+					ClientKeyData:         "src/client.key",
+				},
+			},
+		},
+		Contexts: []KubeconfigNamedContext{
+			{
+				Name: "minikube",
+				Context: KubeconfigContext{
+					Cluster: "minikube",
+					User:    "minikube",
+				},
+			},
+		},
+		CurrentContext: "minikube",
+	}
+	bytes, err := Marshal(&matchKubeConfigValue)
+	if err != nil {
+		t.Fatalf("expect nil got %#v", err)
+	}
+
+	mockFiles()
+
+	config, err := clientcmd.RESTConfigFromKubeConfig(bytes)
+	if err != nil {
+		t.Fatalf("expect nil got %#v", microerror.Mask(err))
+	}
+
+	if config.Host != "https://10.142.5.51:8443" {
+		t.Fatalf("expect host same as %#v got %#v", "https://10.142.5.51:8443", config.Host)
 	}
 }

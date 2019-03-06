@@ -2,9 +2,12 @@ package kubeconfig
 
 import (
 	"github.com/giantswarm/microerror"
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
+	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
+// Kubeconfig is a struct used to create a kubectl configuration YAML file
 type KubeConfigValue struct {
 	APIVersion     string                   `yaml:"apiVersion"`
 	Kind           string                   `yaml:"kind"`
@@ -51,6 +54,14 @@ type KubeconfigContext struct {
 	User    string `yaml:"user"`
 }
 
+func Marshal(config *KubeConfigValue) ([]byte, error) {
+	bytes, err := yaml.Marshal(config)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	return bytes, nil
+}
+
 func Unmarshal(bytes []byte) (*KubeConfigValue, error) {
 	var kubeConfig KubeConfigValue
 	err := yaml.Unmarshal(bytes, &kubeConfig)
@@ -60,10 +71,32 @@ func Unmarshal(bytes []byte) (*KubeConfigValue, error) {
 	return &kubeConfig, nil
 }
 
-func Marshal(config *KubeConfigValue) ([]byte, error) {
-	bytes, err := yaml.Marshal(config)
+func (k *KubeConfig) NewKubeConfigForRESTConfig(config *rest.Config) ([]byte, error) {
+	kubeConfig := KubeConfigValue{
+		Clusters: []KubeconfigNamedCluster{
+			{
+				Cluster: KubeconfigCluster{
+					Server: config.Host,
+				},
+			},
+		},
+	}
+
+	bytes, err := yaml.Marshal(kubeConfig)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 	return bytes, nil
+}
+
+func (k *KubeConfig) NewRESTConfigForKubeConfig(config *KubeConfigValue) (*rest.Config, error) {
+	bytes, err := Marshal(config)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	restConfig, err := clientcmd.RESTConfigFromKubeConfig(bytes)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	return restConfig, nil
 }
