@@ -125,8 +125,8 @@ preferences: {}
 users:
 - name: minikube
   user:
-    client-certificate: /workdir/.minikube/client.crt
-    client-key: /workdir/.minikube/client.key
+    client-certificate-data: /workdir/.minikube/client.crt
+    client-key-data: /workdir/.minikube/client.key
 `),
 			matchKubeConfigValue: KubeConfigValue{
 				APIVersion: "v1",
