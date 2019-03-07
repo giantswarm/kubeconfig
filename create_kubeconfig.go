@@ -2,8 +2,9 @@ package kubeconfig
 
 import (
 	"encoding/base64"
-	"github.com/giantswarm/microerror"
 	yaml "gopkg.in/yaml.v2"
+
+	"github.com/giantswarm/microerror"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
