@@ -1,6 +1,7 @@
 package kubeconfig
 
 import (
+	"bytes"
 	"reflect"
 	"testing"
 
@@ -100,13 +101,13 @@ func TestKubeConfig_getRESTConfigFromSecret(t *testing.T) {
 func TestKubeConfig_Unmarshal(t *testing.T) {
 	testCases := []struct {
 		name                 string
-		bytes                []byte
+		input                []byte
 		matchKubeConfigValue KubeConfigValue
 		errorMatcher         func(error) bool
 	}{
 		{
 			name: "case 1: unmarshal kubeconfig",
-			bytes: []byte(`
+			input: []byte(`
 apiVersion: v1
 clusters:
 - cluster:
@@ -165,7 +166,7 @@ users:
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 
-			result, err := Unmarshal(tc.bytes)
+			result, err := Unmarshal(tc.input)
 
 			switch {
 			case err != nil && tc.errorMatcher == nil:
@@ -191,7 +192,8 @@ func TestKubeConfig_Marshal(t *testing.T) {
 			{
 				Name: "minikube",
 				Cluster: KubeconfigCluster{
-					Server: "https://10.142.5.51:8443",
+					Server:                   "https://10.142.5.51:8443",
+					CertificateAuthorityData: "Y2FkYXRhdGVzdA==",
 				},
 			},
 		},
@@ -199,8 +201,8 @@ func TestKubeConfig_Marshal(t *testing.T) {
 			{
 				Name: "minikube",
 				User: KubeconfigUserKeyPair{
-					ClientCertificateData: "src/client.crt",
-					ClientKeyData:         "src/client.key",
+					ClientCertificateData: "Y2NkYXRhdGVzdA==",
+					ClientKeyData:         "a2V5ZGF0YXRlc3Q=",
 				},
 			},
 		},
@@ -215,19 +217,29 @@ func TestKubeConfig_Marshal(t *testing.T) {
 		},
 		CurrentContext: "minikube",
 	}
-	bytes, err := Marshal(&matchKubeConfigValue)
+	output, err := Marshal(&matchKubeConfigValue)
 	if err != nil {
 		t.Fatalf("expect nil got %#v", err)
 	}
 
-	mockFiles()
-
-	config, err := clientcmd.RESTConfigFromKubeConfig(bytes)
+	config, err := clientcmd.RESTConfigFromKubeConfig(output)
 	if err != nil {
 		t.Fatalf("expect nil got %#v", microerror.Mask(err))
 	}
 
 	if config.Host != "https://10.142.5.51:8443" {
-		t.Fatalf("expect host same as %#v got %#v", "https://10.142.5.51:8443", config.Host)
+		t.Fatalf("expect config.Host same as %#v got %#v", "https://10.142.5.51:8443", config.Host)
+	}
+
+	if !bytes.Equal(config.CertData, []byte("ccdatatest")) {
+		t.Fatalf("expect config.CertData same as %#v got %#v", "ccdatatest", string(config.CertData))
+	}
+
+	if !bytes.Equal(config.CAData, []byte("cadatatest")) {
+		t.Fatalf("expect config.CAData same as %#v got %#v", "cadatatest", string(config.CAData))
+	}
+
+	if !bytes.Equal(config.KeyData, []byte("keydatatest")) {
+		t.Fatalf("expect config.CAData same as %#v got %#v", "keydatatest", string(config.CAData))
 	}
 }
