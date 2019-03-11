@@ -3,7 +3,6 @@ package kubeconfig
 import (
 	"bytes"
 	"context"
-	"encoding/base64"
 	"reflect"
 	"testing"
 
@@ -103,10 +102,10 @@ func TestKubeConfig_getRESTConfigFromSecret(t *testing.T) {
 
 func Test_KubeConfig_Unmarshal(t *testing.T) {
 	testCases := []struct {
-		name                 string
-		input                []byte
-		matchKubeConfigValue KubeConfigValue
-		errorMatcher         func(error) bool
+		name                    string
+		input                   []byte
+		expectedKubeConfigValue KubeConfigValue
+		errorMatcher            func(error) bool
 	}{
 		{
 			name: "case 1: unmarshal kubeconfig",
@@ -131,7 +130,7 @@ users:
     client-certificate-data: /workdir/.minikube/client.crt
     client-key-data: /workdir/.minikube/client.key
 `),
-			matchKubeConfigValue: KubeConfigValue{
+			expectedKubeConfigValue: KubeConfigValue{
 				APIVersion: "v1",
 				Kind:       "Config",
 				Clusters: []KubeconfigNamedCluster{
@@ -180,8 +179,8 @@ users:
 				t.Fatalf("error == %#v, want matching", err)
 			}
 
-			if !reflect.DeepEqual(tc.matchKubeConfigValue, *result) {
-				t.Fatalf("want matching kubeconfig value \n %s", cmp.Diff(*result, tc.matchKubeConfigValue))
+			if !reflect.DeepEqual(tc.expectedKubeConfigValue, *result) {
+				t.Fatalf("want matching kubeconfig value \n %s", cmp.Diff(*result, tc.expectedKubeConfigValue))
 			}
 		})
 	}
@@ -247,66 +246,79 @@ func TestKubeConfig_Marshal(t *testing.T) {
 	}
 }
 
-func TestKubeConfig_NewKubeConfigForRESTConfig(t *testing.T) {
-	restConfig := rest.Config{
-		Host: "http://127.0.0.1",
-		TLSClientConfig: rest.TLSClientConfig{
-			CertData: []byte("test-cert-data"),
-			KeyData:  []byte("test-key-data"),
-			CAData:   []byte("test-CA-data"),
+func Test_KubeConfig_NewKubeConfigForRESTConfig(t *testing.T) {
+	testCases := []struct {
+		name                    string
+		input                   *rest.Config
+		expectedKubeConfigValue KubeConfigValue
+		errorMatcher            func(error) bool
+	}{
+		{
+			name: "case 0: convert to rest config",
+			input: &rest.Config{
+				Host: "http://127.0.0.1",
+				TLSClientConfig: rest.TLSClientConfig{
+					CertData: []byte("test-cert-data"),
+					KeyData:  []byte("test-key-data"),
+					CAData:   []byte("test-CA-data"),
+				},
+			},
+			expectedKubeConfigValue: KubeConfigValue{
+				APIVersion: "v1",
+				Kind:       "Config",
+				Clusters: []KubeconfigNamedCluster{
+					{
+						Name: "test-cluster-name",
+						Cluster: KubeconfigCluster{
+							Server:                   "http://127.0.0.1",
+							CertificateAuthorityData: "dGVzdC1DQS1kYXRh",
+						},
+					},
+				},
+				Users: []KubeconfigUser{
+					{
+						Name: "test-cluster-name-user",
+						User: KubeconfigUserKeyPair{
+							ClientCertificateData: "dGVzdC1jZXJ0LWRhdGE=",
+							ClientKeyData:         "dGVzdC1rZXktZGF0YQ==",
+						},
+					},
+				},
+				Contexts: []KubeconfigNamedContext{
+					{
+						Name: "test-cluster-name-context",
+						Context: KubeconfigContext{
+							Cluster: "test-cluster-name",
+							User:    "test-cluster-name-user",
+						},
+					},
+				},
+				CurrentContext: "test-cluster-name-context",
+			},
 		},
 	}
 	k := KubeConfig{
 		logger:    microloggertest.New(),
 		k8sClient: fake.NewSimpleClientset(),
 	}
-	kubeConfigBytes, err := k.NewKubeConfigForRESTConfig(context.Background(), &restConfig, "test-cluster-name")
-	if err != nil {
-		t.Fatalf("expect nil got %#v", microerror.Mask(err))
-	}
 
-	kubeconfig, err := Unmarshal(kubeConfigBytes)
-	if err != nil {
-		t.Fatalf("expect nil got %#v", microerror.Mask(err))
-	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
 
-	if kubeconfig.Clusters[0].Name != "test-cluster-name" {
-		t.Fatalf("expect %#v got %#v", "test-cluster-name", kubeconfig.Clusters[0].Name)
-	}
+			kubeConfigBytes, err := k.NewKubeConfigForRESTConfig(context.Background(), tc.input, "test-cluster-name")
+			if err != nil {
+				t.Fatalf("expect nil got %#v", microerror.Mask(err))
+			}
 
-	if kubeconfig.Clusters[0].Cluster.Server != "http://127.0.0.1" {
-		t.Fatalf("expect %#v got %#v", "http://127.0.0.1", kubeconfig.Clusters[0].Cluster.Server)
-	}
+			kubeconfig, err := Unmarshal(kubeConfigBytes)
+			if err != nil {
+				t.Fatalf("expect nil got %#v", microerror.Mask(err))
+			}
 
-	caData := base64.StdEncoding.EncodeToString([]byte("test-CA-data"))
-	if kubeconfig.Clusters[0].Cluster.CertificateAuthorityData != string(caData) {
-		t.Fatalf("expect %#v got %#v", caData, kubeconfig.Clusters[0].Cluster.CertificateAuthorityData)
-	}
-
-	if kubeconfig.Contexts[0].Name != "test-cluster-name-context" {
-		t.Fatalf("expect %#v got %#v", "test-cluster-name-context", kubeconfig.Contexts[0].Name)
-	}
-
-	if kubeconfig.Contexts[0].Context.Cluster != "test-cluster-name" {
-		t.Fatalf("expect %#v got %#v", "test-cluster-name", kubeconfig.Contexts[0].Context.Cluster)
-	}
-
-	if kubeconfig.Contexts[0].Context.User != "test-cluster-name-user" {
-		t.Fatalf("expect %#v got %#v", "test-cluster-name-user", kubeconfig.Contexts[0].Context.User)
-	}
-
-	if kubeconfig.Users[0].Name != "test-cluster-name-user" {
-		t.Fatalf("expect %#v got %#v", "test-cluster-name-user", kubeconfig.Users[0].Name)
-	}
-
-	keyData := base64.StdEncoding.EncodeToString([]byte("test-key-data"))
-	if kubeconfig.Users[0].User.ClientKeyData != string(keyData) {
-		t.Fatalf("expect %#v got %#v", keyData, kubeconfig.Users[0].User.ClientKeyData)
-	}
-
-	certData := base64.StdEncoding.EncodeToString([]byte("test-cert-data"))
-	if kubeconfig.Users[0].User.ClientCertificateData != string(certData) {
-		t.Fatalf("expect %#v got %#v", certData, kubeconfig.Users[0].User.ClientCertificateData)
+			if !reflect.DeepEqual(tc.expectedKubeConfigValue, *kubeconfig) {
+				t.Fatalf("diff got \n %s", cmp.Diff(tc.expectedKubeConfigValue, *kubeconfig))
+			}
+		})
 	}
 
 }

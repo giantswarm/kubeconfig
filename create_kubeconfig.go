@@ -77,6 +77,8 @@ func Unmarshal(bytes []byte) (*KubeConfigValue, error) {
 
 func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *rest.Config, clusterName string) ([]byte, error) {
 	kubeConfig := KubeConfigValue{
+		APIVersion: "v1",
+		Kind:       "Config",
 		Clusters: []KubeconfigNamedCluster{
 			{
 				Name: clusterName,
@@ -104,6 +106,7 @@ func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *res
 				},
 			},
 		},
+		CurrentContext: fmt.Sprintf("%s-context", clusterName),
 	}
 
 	bytes, err := yaml.Marshal(kubeConfig)
