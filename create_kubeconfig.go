@@ -11,53 +11,6 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-// KubeConfigValue is a struct used to create a kubectl configuration YAML file
-type KubeConfigValue struct {
-	APIVersion     string                   `yaml:"apiVersion"`
-	Kind           string                   `yaml:"kind"`
-	Clusters       []KubeconfigNamedCluster `yaml:"clusters"`
-	Users          []KubeconfigUser         `yaml:"users"`
-	Contexts       []KubeconfigNamedContext `yaml:"contexts"`
-	CurrentContext string                   `yaml:"current-context"`
-	Preferences    struct{}                 `yaml:"preferences"`
-}
-
-// KubeconfigUser is a struct used to create a kubectl configuration YAML file
-type KubeconfigUser struct {
-	Name string                `yaml:"name"`
-	User KubeconfigUserKeyPair `yaml:"user"`
-}
-
-// KubeconfigUserKeyPair is a struct used to create a kubectl configuration YAML file
-type KubeconfigUserKeyPair struct {
-	ClientCertificateData string `yaml:"client-certificate-data"`
-	ClientKeyData         string `yaml:"client-key-data"`
-}
-
-// KubeconfigNamedCluster is a struct used to create a kubectl configuration YAML file
-type KubeconfigNamedCluster struct {
-	Name    string            `yaml:"name"`
-	Cluster KubeconfigCluster `yaml:"cluster"`
-}
-
-// KubeconfigCluster is a struct used to create a kubectl configuration YAML file
-type KubeconfigCluster struct {
-	Server                   string `yaml:"server"`
-	CertificateAuthorityData string `yaml:"certificate-authority-data"`
-}
-
-// KubeconfigNamedContext is a struct used to create a kubectl configuration YAML file
-type KubeconfigNamedContext struct {
-	Name    string            `yaml:"name"`
-	Context KubeconfigContext `yaml:"context"`
-}
-
-// KubeconfigContext is a struct used to create a kubectl configuration YAML file
-type KubeconfigContext struct {
-	Cluster string `yaml:"cluster"`
-	User    string `yaml:"user"`
-}
-
 func marshal(config *KubeConfigValue) ([]byte, error) {
 	bytes, err := yaml.Marshal(config)
 	if err != nil {
@@ -76,6 +29,12 @@ func unmarshal(bytes []byte) (*KubeConfigValue, error) {
 }
 
 func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *rest.Config, clusterName string) ([]byte, error) {
+	if clusterName == "" {
+		return nil, microerror.Maskf(executionError, "clusterName must not be empty")
+	} else if config == nil {
+		return nil, microerror.Maskf(executionError, "config must not be empty")
+	}
+
 	kubeConfig := KubeConfigValue{
 		APIVersion: "v1",
 		Kind:       "Config",
@@ -116,12 +75,8 @@ func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *res
 	return bytes, nil
 }
 
-func (k *KubeConfig) NewRESTConfigForKubeConfig(ctx context.Context, config *KubeConfigValue) (*rest.Config, error) {
-	bytes, err := marshal(config)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	restConfig, err := clientcmd.RESTConfigFromKubeConfig(bytes)
+func (k *KubeConfig) NewRESTConfigForKubeConfig(ctx context.Context, kubeConfig []byte) (*rest.Config, error) {
+	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

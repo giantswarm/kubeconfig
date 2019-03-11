@@ -17,7 +17,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-func TestKubeConfig_getRESTConfigFromSecret(t *testing.T) {
+func Test_KubeConfig_getRESTConfigFromSecret(t *testing.T) {
 	testCases := []struct {
 		name           string
 		presentSecrets []*corev1.Secret
@@ -186,7 +186,7 @@ users:
 	}
 }
 
-func TestKubeConfig_Marshal(t *testing.T) {
+func Test_KubeConfig_Marshal(t *testing.T) {
 	matchKubeConfigValue := KubeConfigValue{
 		APIVersion: "v1",
 		Kind:       "Config",
