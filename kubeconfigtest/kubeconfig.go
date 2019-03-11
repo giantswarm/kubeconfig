@@ -40,5 +40,5 @@ func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *res
 }
 
 func (k *KubeConfig) NewRESTConfigForKubeConfig(ctx context.Context, config *kubeconfig.KubeConfigValue) (*rest.Config, error) {
-	return *rest.Config{}, nil
+	return &rest.Config{}, nil
 }
