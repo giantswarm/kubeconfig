@@ -101,7 +101,7 @@ func TestKubeConfig_getRESTConfigFromSecret(t *testing.T) {
 	}
 }
 
-func TestKubeConfig_Unmarshal(t *testing.T) {
+func Test_KubeConfig_Unmarshal(t *testing.T) {
 	testCases := []struct {
 		name                 string
 		input                []byte
