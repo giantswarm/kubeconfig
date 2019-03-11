@@ -1,6 +1,6 @@
 package kubeconfig
 
-// KubeConfigValue is a struct used to create a kubectl configuration YAML file
+// KubeConfigValue is a struct used to create a kubectl configuration YAML file.
 type KubeConfigValue struct {
 	APIVersion     string                   `yaml:"apiVersion"`
 	Kind           string                   `yaml:"kind"`

@@ -47,37 +47,12 @@ func New(config Config) (*KubeConfig, error) {
 	return g, nil
 }
 
-// NewRESTConfigForApp returns a Kubernetes REST config for the cluster
-// configured in the kubeconfig section of the app CR.
-func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, app v1alpha1.App) (*rest.Config, error) {
-	secretName := secretName(app)
-	secretNamespace := secretNamespace(app)
-
-	kubeConfig, err := k.getKubeConfigFromSecret(ctx, secretName, secretNamespace)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	return restConfig, nil
-}
-
-func (k *KubeConfig) NewRESTConfigForKubeConfig(ctx context.Context, kubeConfig []byte) (*rest.Config, error) {
-	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	return restConfig, nil
-}
-
 func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *rest.Config, clusterName string) ([]byte, error) {
+	if config == nil {
+		return nil, microerror.Maskf(executionFailedError, "config must not be empty")
+	}
 	if clusterName == "" {
-		return nil, microerror.Maskf(executionError, "clusterName must not be empty")
-	} else if config == nil {
-		return nil, microerror.Maskf(executionError, "config must not be empty")
+		return nil, microerror.Maskf(executionFailedError, "clusterName must not be empty")
 	}
 
 	kubeConfig := KubeConfigValue{
@@ -118,6 +93,32 @@ func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *res
 		return nil, microerror.Mask(err)
 	}
 	return bytes, nil
+}
+
+// NewRESTConfigForApp returns a Kubernetes REST config for the cluster
+// configured in the kubeconfig section of the app CR.
+func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, app v1alpha1.App) (*rest.Config, error) {
+	secretName := secretName(app)
+	secretNamespace := secretNamespace(app)
+
+	kubeConfig, err := k.getKubeConfigFromSecret(ctx, secretName, secretNamespace)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	return restConfig, nil
+}
+
+func (k *KubeConfig) NewRESTConfigForKubeConfig(ctx context.Context, kubeConfig []byte) (*rest.Config, error) {
+	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	return restConfig, nil
 }
 
 // getKubeConfigFromSecret returns KubeConfig bytes based on the specified secret information.

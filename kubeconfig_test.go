@@ -100,7 +100,7 @@ func Test_KubeConfig_getRESTConfigFromSecret(t *testing.T) {
 	}
 }
 
-func Test_KubeConfig_Unmarshal(t *testing.T) {
+func Test_KubeConfig_unmarshal(t *testing.T) {
 	testCases := []struct {
 		name                    string
 		input                   []byte
@@ -186,7 +186,7 @@ users:
 	}
 }
 
-func Test_KubeConfig_Marshal(t *testing.T) {
+func Test_KubeConfig_marshal(t *testing.T) {
 	matchKubeConfigValue := KubeConfigValue{
 		APIVersion: "v1",
 		Kind:       "Config",

@@ -20,11 +20,11 @@ func IsNotFoundError(err error) bool {
 	return microerror.Cause(err) == notFoundError
 }
 
-var executionError = &microerror.Error{
+var executionFailedError = &microerror.Error{
 	Kind: "executionError",
 }
 
 // IsExecutionError asserts executionError.
 func IsExecutionError(err error) bool {
-	return microerror.Cause(err) == executionError
+	return microerror.Cause(err) == executionFailedError
 }
