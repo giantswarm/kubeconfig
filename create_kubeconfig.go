@@ -11,7 +11,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-// Kubeconfig is a struct used to create a kubectl configuration YAML file
+// KubeconfigValue is a struct used to create a kubectl configuration YAML file
 type KubeConfigValue struct {
 	APIVersion     string                   `yaml:"apiVersion"`
 	Kind           string                   `yaml:"kind"`
@@ -58,7 +58,7 @@ type KubeconfigContext struct {
 	User    string `yaml:"user"`
 }
 
-func Marshal(config *KubeConfigValue) ([]byte, error) {
+func marshal(config *KubeConfigValue) ([]byte, error) {
 	bytes, err := yaml.Marshal(config)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -66,7 +66,7 @@ func Marshal(config *KubeConfigValue) ([]byte, error) {
 	return bytes, nil
 }
 
-func Unmarshal(bytes []byte) (*KubeConfigValue, error) {
+func unmarshal(bytes []byte) (*KubeConfigValue, error) {
 	var kubeConfig KubeConfigValue
 	err := yaml.Unmarshal(bytes, &kubeConfig)
 	if err != nil {
@@ -117,7 +117,7 @@ func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *res
 }
 
 func (k *KubeConfig) NewRESTConfigForKubeConfig(ctx context.Context, config *KubeConfigValue) (*rest.Config, error) {
-	bytes, err := Marshal(config)
+	bytes, err := marshal(config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

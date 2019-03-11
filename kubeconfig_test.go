@@ -168,7 +168,7 @@ users:
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 
-			result, err := Unmarshal(tc.input)
+			result, err := unmarshal(tc.input)
 
 			switch {
 			case err != nil && tc.errorMatcher == nil:
@@ -219,7 +219,7 @@ func TestKubeConfig_Marshal(t *testing.T) {
 		},
 		CurrentContext: "minikube",
 	}
-	output, err := Marshal(&matchKubeConfigValue)
+	output, err := marshal(&matchKubeConfigValue)
 	if err != nil {
 		t.Fatalf("expect nil got %#v", err)
 	}
@@ -310,7 +310,7 @@ func Test_KubeConfig_NewKubeConfigForRESTConfig(t *testing.T) {
 				t.Fatalf("expect nil got %#v", microerror.Mask(err))
 			}
 
-			kubeconfig, err := Unmarshal(kubeConfigBytes)
+			kubeconfig, err := unmarshal(kubeConfigBytes)
 			if err != nil {
 				t.Fatalf("expect nil got %#v", microerror.Mask(err))
 			}
