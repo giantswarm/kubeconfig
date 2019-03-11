@@ -2,6 +2,8 @@ package kubeconfig
 
 import (
 	"bytes"
+	"context"
+	"encoding/base64"
 	"reflect"
 	"testing"
 
@@ -12,6 +14,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/fake"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -242,4 +245,68 @@ func TestKubeConfig_Marshal(t *testing.T) {
 	if !bytes.Equal(config.KeyData, []byte("keydatatest")) {
 		t.Fatalf("expect config.CAData same as %#v got %#v", "keydatatest", string(config.CAData))
 	}
+}
+
+func TestKubeConfig_NewKubeConfigForRESTConfig(t *testing.T) {
+	restConfig := rest.Config{
+		Host: "http://127.0.0.1",
+		TLSClientConfig: rest.TLSClientConfig{
+			CertData: []byte("test-cert-data"),
+			KeyData:  []byte("test-key-data"),
+			CAData:   []byte("test-CA-data"),
+		},
+	}
+	k := KubeConfig{
+		logger:    microloggertest.New(),
+		k8sClient: fake.NewSimpleClientset(),
+	}
+	kubeConfigBytes, err := k.NewKubeConfigForRESTConfig(context.Background(), &restConfig, "test-cluster-name")
+	if err != nil {
+		t.Fatalf("expect nil got %#v", microerror.Mask(err))
+	}
+
+	kubeconfig, err := Unmarshal(kubeConfigBytes)
+	if err != nil {
+		t.Fatalf("expect nil got %#v", microerror.Mask(err))
+	}
+
+	if kubeconfig.Clusters[0].Name != "test-cluster-name" {
+		t.Fatalf("expect %#v got %#v", "test-cluster-name", kubeconfig.Clusters[0].Name)
+	}
+
+	if kubeconfig.Clusters[0].Cluster.Server != "http://127.0.0.1" {
+		t.Fatalf("expect %#v got %#v", "http://127.0.0.1", kubeconfig.Clusters[0].Cluster.Server)
+	}
+
+	caData := base64.StdEncoding.EncodeToString([]byte("test-CA-data"))
+	if kubeconfig.Clusters[0].Cluster.CertificateAuthorityData != string(caData) {
+		t.Fatalf("expect %#v got %#v", caData, kubeconfig.Clusters[0].Cluster.CertificateAuthorityData)
+	}
+
+	if kubeconfig.Contexts[0].Name != "test-cluster-name-context" {
+		t.Fatalf("expect %#v got %#v", "test-cluster-name-context", kubeconfig.Contexts[0].Name)
+	}
+
+	if kubeconfig.Contexts[0].Context.Cluster != "test-cluster-name" {
+		t.Fatalf("expect %#v got %#v", "test-cluster-name", kubeconfig.Contexts[0].Context.Cluster)
+	}
+
+	if kubeconfig.Contexts[0].Context.User != "test-cluster-name-user" {
+		t.Fatalf("expect %#v got %#v", "test-cluster-name-user", kubeconfig.Contexts[0].Context.User)
+	}
+
+	if kubeconfig.Users[0].Name != "test-cluster-name-user" {
+		t.Fatalf("expect %#v got %#v", "test-cluster-name-user", kubeconfig.Users[0].Name)
+	}
+
+	keyData := base64.StdEncoding.EncodeToString([]byte("test-key-data"))
+	if kubeconfig.Users[0].User.ClientKeyData != string(keyData) {
+		t.Fatalf("expect %#v got %#v", keyData, kubeconfig.Users[0].User.ClientKeyData)
+	}
+
+	certData := base64.StdEncoding.EncodeToString([]byte("test-cert-data"))
+	if kubeconfig.Users[0].User.ClientCertificateData != string(certData) {
+		t.Fatalf("expect %#v got %#v", certData, kubeconfig.Users[0].User.ClientCertificateData)
+	}
+
 }
