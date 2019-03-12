@@ -305,7 +305,7 @@ func Test_KubeConfig_NewKubeConfigForRESTConfig(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 
-			kubeConfigBytes, err := k.NewKubeConfigForRESTConfig(context.Background(), tc.input, "test-cluster-name")
+			kubeConfigBytes, err := k.NewKubeConfigForRESTConfig(context.Background(), tc.input, "test-cluster-name", "")
 			if err != nil {
 				t.Fatalf("expect nil got %#v", microerror.Mask(err))
 			}
