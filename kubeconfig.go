@@ -47,7 +47,7 @@ func New(config Config) (*KubeConfig, error) {
 	return g, nil
 }
 
-func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *rest.Config, clusterName string) ([]byte, error) {
+func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *rest.Config, clusterName, namespace string) ([]byte, error) {
 	if config == nil {
 		return nil, microerror.Maskf(executionFailedError, "config must not be empty")
 	}
@@ -71,8 +71,9 @@ func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *res
 			{
 				Name: fmt.Sprintf("%s-context", clusterName),
 				Context: KubeconfigContext{
-					Cluster: clusterName,
-					User:    fmt.Sprintf("%s-user", clusterName),
+					Cluster:   clusterName,
+					Namespace: namespace,
+					User:      fmt.Sprintf("%s-user", clusterName),
 				},
 			},
 		},

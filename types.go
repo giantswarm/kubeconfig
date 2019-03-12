@@ -43,6 +43,7 @@ type KubeconfigNamedContext struct {
 
 // KubeconfigContext is a struct used to create a kubectl configuration YAML file
 type KubeconfigContext struct {
-	Cluster string `yaml:"cluster"`
-	User    string `yaml:"user"`
+	Cluster   string `yaml:"cluster"`
+	Namespace string `yaml:"namespace,omitempty"`
+	User      string `yaml:"user"`
 }
