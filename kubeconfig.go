@@ -31,20 +31,11 @@ type KubeConfig struct {
 }
 
 // New creates a new KubeConfig service.
-func New(config Config) (*KubeConfig, error) {
-	if config.Logger == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
-	}
-	if config.K8sClient == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
-	}
-
-	g := &KubeConfig{
+func New(config Config) *KubeConfig {
+	return &KubeConfig{
 		logger:    config.Logger,
 		k8sClient: config.K8sClient,
 	}
-
-	return g, nil
 }
 
 func (k *KubeConfig) NewKubeConfigForRESTConfig(config *rest.Config, clusterName, namespace string) ([]byte, error) {
