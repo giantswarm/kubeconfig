@@ -47,7 +47,7 @@ func New(config Config) (*KubeConfig, error) {
 	return g, nil
 }
 
-func (k *KubeConfig) NewKubeConfigForRESTConfig(ctx context.Context, config *rest.Config, clusterName, namespace string) ([]byte, error) {
+func (k *KubeConfig) NewKubeConfigForRESTConfig(config *rest.Config, clusterName, namespace string) ([]byte, error) {
 	if config == nil {
 		return nil, microerror.Maskf(executionFailedError, "config must not be empty")
 	}
@@ -114,7 +114,7 @@ func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, app v1alpha1.App) 
 	return restConfig, nil
 }
 
-func (k *KubeConfig) NewRESTConfigForKubeConfig(ctx context.Context, kubeConfig []byte) (*rest.Config, error) {
+func (k *KubeConfig) NewRESTConfigForKubeConfig(kubeConfig []byte) (*rest.Config, error) {
 	restConfig, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -124,6 +124,11 @@ func (k *KubeConfig) NewRESTConfigForKubeConfig(ctx context.Context, kubeConfig 
 
 // getKubeConfigFromSecret returns KubeConfig bytes based on the specified secret information.
 func (k *KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, secretNamespace string) ([]byte, error) {
+	err := k.validate()
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	secret, err := k.k8sClient.CoreV1().Secrets(secretNamespace).Get(secretName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
 		return nil, microerror.Maskf(notFoundError, "Secret %#q in Namespace %#q", secretName, secretNamespace)
@@ -137,6 +142,16 @@ func (k *KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, se
 	} else {
 		return nil, microerror.Maskf(notFoundError, "Secret %#q in Namespace %#q does not have kubeConfig key in its data", secretName, secretNamespace)
 	}
+}
+
+func (k *KubeConfig) validate() error {
+	if k.logger == nil {
+		return microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", k)
+	}
+	if k.k8sClient == nil {
+		return microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", k)
+	}
+	return nil
 }
 
 func marshal(config *KubeConfigValue) ([]byte, error) {
