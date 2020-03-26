@@ -4,8 +4,9 @@ import (
 	"context"
 
 	"github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
-	"github.com/giantswarm/kubeconfig"
 	"k8s.io/client-go/rest"
+
+	"github.com/giantswarm/kubeconfig"
 )
 
 type Config struct {

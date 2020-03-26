@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+
 	yaml "gopkg.in/yaml.v2"
 
 	"github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
