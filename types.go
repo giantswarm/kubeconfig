@@ -19,9 +19,9 @@ type KubeconfigUser struct {
 
 // KubeconfigUserKeyPair is a struct used to create a kubectl configuration YAML file
 type KubeconfigUserKeyPair struct {
-	ClientCertificateData string `yaml:"client-certificate-data"`
-	ClientKeyData         string `yaml:"client-key-data"`
-	AuthProvider          string `yaml:"auth-provider"`
+	ClientCertificateData string                 `yaml:"client-certificate-data"`
+	ClientKeyData         string                 `yaml:"client-key-data"`
+	AuthProvider          KubeconfigAuthProvider `yaml:"auth-provider"`
 }
 
 // KubeconfigAuthProvider is a struct used to create a kubectl authentication provider
