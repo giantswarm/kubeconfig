@@ -19,8 +19,15 @@ type KubeconfigUser struct {
 
 // KubeconfigUserKeyPair is a struct used to create a kubectl configuration YAML file
 type KubeconfigUserKeyPair struct {
-	ClientCertificateData string `yaml:"client-certificate-data"`
-	ClientKeyData         string `yaml:"client-key-data"`
+	ClientCertificateData string                 `yaml:"client-certificate-data"`
+	ClientKeyData         string                 `yaml:"client-key-data"`
+	AuthProvider          KubeconfigAuthProvider `yaml:"auth-provider,omitempty"`
+}
+
+// KubeconfigAuthProvider is a struct used to create a kubectl authentication provider
+type KubeconfigAuthProvider struct {
+	Name   string            `yaml:"name"`
+	Config map[string]string `yaml:"config"`
 }
 
 // KubeconfigNamedCluster is a struct used to create a kubectl configuration YAML file
@@ -33,6 +40,7 @@ type KubeconfigNamedCluster struct {
 type KubeconfigCluster struct {
 	Server                   string `yaml:"server"`
 	CertificateAuthorityData string `yaml:"certificate-authority-data"`
+	CertificateAuthority     string `yaml:"certificate-authority"`
 }
 
 // KubeconfigNamedContext is a struct used to create a kubectl configuration YAML file

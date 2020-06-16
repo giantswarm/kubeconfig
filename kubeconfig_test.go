@@ -137,7 +137,8 @@ users:
 					{
 						Name: "minikube",
 						Cluster: KubeconfigCluster{
-							Server: "https://10.142.5.51:8443",
+							Server:               "https://10.142.5.51:8443",
+							CertificateAuthority: "/workdir/.minikube/ca.crt",
 						},
 					},
 				},
@@ -205,6 +206,10 @@ func Test_KubeConfig_marshal(t *testing.T) {
 				User: KubeconfigUserKeyPair{
 					ClientCertificateData: "Y2NkYXRhdGVzdA==",
 					ClientKeyData:         "a2V5ZGF0YXRlc3Q=",
+					AuthProvider: KubeconfigAuthProvider{
+						Name:   "",
+						Config: map[string]string{},
+					},
 				},
 			},
 		},
@@ -281,6 +286,10 @@ func Test_KubeConfig_NewKubeConfigForRESTConfig(t *testing.T) {
 						User: KubeconfigUserKeyPair{
 							ClientCertificateData: "dGVzdC1jZXJ0LWRhdGE=",
 							ClientKeyData:         "dGVzdC1rZXktZGF0YQ==",
+							AuthProvider: KubeconfigAuthProvider{
+								Name:   "",
+								Config: nil,
+							},
 						},
 					},
 				},
