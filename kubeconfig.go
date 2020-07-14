@@ -126,7 +126,7 @@ func NewRESTConfigForKubeConfig(ctx context.Context, kubeConfig []byte) (*rest.C
 
 // getKubeConfigFromSecret returns KubeConfig bytes based on the specified secret information.
 func (k *KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, secretNamespace string) ([]byte, error) {
-	secret, err := k.k8sClient.CoreV1().Secrets(secretNamespace).Get(secretName, metav1.GetOptions{})
+	secret, err := k.k8sClient.CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
 		return nil, microerror.Maskf(notFoundError, "Secret %#q in Namespace %#q", secretName, secretNamespace)
 	} else if _, isStatus := err.(*errors.StatusError); isStatus {
