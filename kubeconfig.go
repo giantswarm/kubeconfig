@@ -7,7 +7,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
+	"github.com/giantswarm/apiextensions/v2/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"k8s.io/apimachinery/pkg/api/errors"

@@ -1,7 +1,7 @@
 package kubeconfig
 
 import (
-	"github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
+	"github.com/giantswarm/apiextensions/v2/pkg/apis/application/v1alpha1"
 )
 
 func inCluster(app v1alpha1.App) bool {
