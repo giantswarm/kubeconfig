@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update Kubernetes dependencies to v1.18.5.
 - Add types for authentication.
 
 ## [0.2.0] 2020-03-26

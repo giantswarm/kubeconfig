@@ -3,7 +3,7 @@ package kubeconfig
 import (
 	"context"
 
-	"github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
+	"github.com/giantswarm/apiextensions/v2/pkg/apis/application/v1alpha1"
 	"k8s.io/client-go/rest"
 )
 

@@ -3,10 +3,10 @@ package kubeconfigtest
 import (
 	"context"
 
-	"github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
+	"github.com/giantswarm/apiextensions/v2/pkg/apis/application/v1alpha1"
 	"k8s.io/client-go/rest"
 
-	"github.com/giantswarm/kubeconfig"
+	"github.com/giantswarm/kubeconfig/v2"
 )
 
 type Config struct {
