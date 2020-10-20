@@ -1,6 +1,6 @@
 module github.com/giantswarm/kubeconfig/v2
 
-go 1.15
+go 1.14
 
 require (
 	github.com/giantswarm/apiextensions/v3 v3.2.0
