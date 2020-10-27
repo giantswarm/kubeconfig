@@ -3,7 +3,7 @@ module github.com/giantswarm/kubeconfig/v3
 go 1.14
 
 require (
-	github.com/giantswarm/apiextensions/v3 v3.2.0
+	github.com/giantswarm/apiextensions/v3 v3.4.0
 	github.com/giantswarm/microerror v0.2.1
 	github.com/giantswarm/micrologger v0.3.1
 	github.com/google/go-cmp v0.4.1

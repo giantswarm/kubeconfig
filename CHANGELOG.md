@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated apiextensions to v3.2.0.
+- Updated apiextensions to v3.4.0.
 - Prepare module v3.
 
 ## [2.0.0] - 2020-08-10
