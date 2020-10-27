@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2020-10-27
+
 ### Changed
 
 - Updated apiextensions to v3.4.0.
@@ -32,7 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/kubeconfig/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/kubeconfig/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/giantswarm/kubeconfig/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/giantswarm/kubeconfig/compare/v0.2.0...v2.0.0
 [0.2.0]: https://github.com/giantswarm/helmclient/compare/v0.1.0...v0.2.0
 
