@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/giantswarm/kubeconfig?status.svg)](http://godoc.org/github.com/giantswarm/kubeconfig) [![CircleCI](https://circleci.com/gh/giantswarm/kubeconfig.svg?style=svg)](https://circleci.com/gh/giantswarm/kubeconfig)
+[![GoDoc](https://godoc.org/github.com/giantswarm/kubeconfig?status.svg)](http://godoc.org/github.com/giantswarm/kubeconfig) [![CircleCI](https://circleci.com/gh/giantswarm/kubeconfig.svg?style=shield)](https://circleci.com/gh/giantswarm/kubeconfig)
 
 # kubeconfig
 
