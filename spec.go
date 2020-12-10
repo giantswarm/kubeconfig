@@ -8,6 +8,6 @@ import (
 
 type Interface interface {
 	// NewRESTConfigForApp returns a Kubernetes REST Config for the cluster configured
-	// in the kubeconfig section of the app CR.
+	// in the secrets objects.
 	NewRESTConfigForApp(ctx context.Context, secretName, secretNamespace string) (*rest.Config, error)
 }
