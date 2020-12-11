@@ -3,7 +3,6 @@ package kubeconfigtest
 import (
 	"context"
 
-	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
 	"k8s.io/client-go/rest"
 
 	"github.com/giantswarm/kubeconfig/v3"
@@ -28,7 +27,7 @@ func New(config Config) kubeconfig.Interface {
 	return k
 }
 
-func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, app v1alpha1.App) (*rest.Config, error) {
+func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, secretName, secretNamespace string) (*rest.Config, error) {
 	if k.restConfigFromAppError != nil {
 		return nil, k.restConfigFromAppError
 	}
