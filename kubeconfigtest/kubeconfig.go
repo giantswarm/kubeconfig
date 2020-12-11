@@ -5,7 +5,7 @@ import (
 
 	"k8s.io/client-go/rest"
 
-	"github.com/giantswarm/kubeconfig/v3"
+	"github.com/giantswarm/kubeconfig/v4"
 )
 
 type Config struct {

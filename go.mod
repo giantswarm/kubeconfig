@@ -1,4 +1,4 @@
-module github.com/giantswarm/kubeconfig/v3
+module github.com/giantswarm/kubeconfig/v4
 
 go 1.15
 
