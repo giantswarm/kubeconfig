@@ -27,7 +27,7 @@ func New(config Config) kubeconfig.Interface {
 	return k
 }
 
-func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, secretName, secretNamespace string) (*rest.Config, error) {
+func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, secretName, secretNamespace, secretKey string) (*rest.Config, error) {
 	if k.restConfigFromAppError != nil {
 		return nil, k.restConfigFromAppError
 	}
