@@ -85,7 +85,7 @@ func Test_KubeConfig_getRESTConfigFromSecret(t *testing.T) {
 				logger:    microloggertest.New(),
 				k8sClient: fake.NewSimpleClientset(objs...),
 			}
-			_, err := k.getKubeConfigFromSecret(context.TODO(), "kubeconfig-secret-gs", "")
+			_, err := k.getKubeConfigFromSecret(context.TODO(), "kubeconfig-secret-gs", "", "kubeConfig")
 
 			switch {
 			case err != nil && tc.errorMatcher == nil:

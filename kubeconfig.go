@@ -39,8 +39,8 @@ func New(config Config) (*KubeConfig, error) {
 
 // NewRESTConfigForApp returns a Kubernetes REST config for the cluster
 // configured in the kubeconfig section of the app CR.
-func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, secretName, secretNamespace string) (*rest.Config, error) {
-	kubeConfig, err := k.getKubeConfigFromSecret(ctx, secretName, secretNamespace)
+func (k *KubeConfig) NewRESTConfigForApp(ctx context.Context, secretName, secretNamespace, secretKey string) (*rest.Config, error) {
+	kubeConfig, err := k.getKubeConfigFromSecret(ctx, secretName, secretNamespace, secretKey)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -112,7 +112,7 @@ func NewRESTConfigForKubeConfig(ctx context.Context, kubeConfig []byte) (*rest.C
 }
 
 // getKubeConfigFromSecret returns KubeConfig bytes based on the specified secret information.
-func (k *KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, secretNamespace string) ([]byte, error) {
+func (k *KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, secretNamespace, secretKey string) ([]byte, error) {
 	secret, err := k.k8sClient.CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
 		return nil, microerror.Maskf(notFoundError, "Secret %#q in Namespace %#q", secretName, secretNamespace)
@@ -121,7 +121,7 @@ func (k *KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, se
 	} else if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	if bytes, ok := secret.Data["kubeConfig"]; ok {
+	if bytes, ok := secret.Data[secretKey]; ok {
 		return bytes, nil
 	} else {
 		return nil, microerror.Maskf(notFoundError, "Secret %#q in Namespace %#q does not have kubeConfig key in its data", secretName, secretNamespace)
