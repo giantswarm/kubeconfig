@@ -122,8 +122,10 @@ func (k *KubeConfig) getKubeConfigFromSecret(ctx context.Context, secretName, se
 		return nil, microerror.Mask(err)
 	}
 	if bytes, ok := secret.Data["kubeConfig"]; ok {
+		// "kubeConfig" key is found in GiantSwarm-created kubeconfigs
 		return bytes, nil
 	} else if bytes, ok := secret.Data["value"]; ok {
+		// "value" key is found in CAPI-created kubeconfigs
 		return bytes, nil
 	} else {
 		return nil, microerror.Maskf(notFoundError, "Secret %#q in Namespace %#q does not have kubeConfig key in its data", secretName, secretNamespace)
