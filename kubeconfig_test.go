@@ -71,6 +71,22 @@ func Test_KubeConfig_getRESTConfigFromSecret(t *testing.T) {
 			},
 			errorMatcher: nil,
 		},
+		{
+			name: "case 3: CAPI secret found and no error",
+			presentSecrets: []*corev1.Secret{
+				{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels:    map[string]string{},
+						Name:      "kubeconfig-secret-gs",
+						Namespace: metav1.NamespaceNone,
+					},
+					Data: map[string][]byte{
+						"value": []byte("test"),
+					},
+				},
+			},
+			errorMatcher: nil,
+		},
 	}
 
 	for _, tc := range testCases {
