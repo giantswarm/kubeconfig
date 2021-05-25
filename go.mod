@@ -9,7 +9,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.18.19
 	k8s.io/apimachinery v0.18.19
-	k8s.io/client-go v0.18.18
+	k8s.io/client-go v0.18.19
 )
 
 // Apply fix for CVE-2020-15114 not yet released in github.com/spf13/viper.
