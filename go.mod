@@ -13,4 +13,4 @@ require (
 )
 
 // Apply fix for CVE-2020-15114 not yet released in github.com/spf13/viper.
-replace github.com/bketelsen/crypt => github.com/bketelsen/crypt v0.0.3
+replace github.com/bketelsen/crypt => github.com/bketelsen/crypt v0.0.4
