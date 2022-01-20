@@ -7,9 +7,9 @@ require (
 	github.com/giantswarm/micrologger v0.6.0
 	github.com/google/go-cmp v0.5.7
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.20.14
-	k8s.io/apimachinery v0.20.14
-	k8s.io/client-go v0.20.14
+	k8s.io/api v0.20.15
+	k8s.io/apimachinery v0.20.15
+	k8s.io/client-go v0.20.15
 )
 
 replace (
