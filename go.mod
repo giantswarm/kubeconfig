@@ -6,6 +6,7 @@ require (
 	github.com/giantswarm/microerror v0.4.0
 	github.com/giantswarm/micrologger v0.6.0
 	github.com/google/go-cmp v0.5.8
+	golang.org/x/sys v0.0.0-20220429233432-b5fbb4746d32 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.20.15
 	k8s.io/apimachinery v0.20.15
