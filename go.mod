@@ -1,6 +1,6 @@
 module github.com/giantswarm/kubeconfig/v4
 
-go 1.18
+go 1.19
 
 require (
 	github.com/giantswarm/microerror v0.4.0
@@ -52,5 +52,5 @@ replace (
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	// Use v1.4.2 of gorilla/websocket to fix nancy alert.
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.5.0
-	golang.org/x/text => golang.org/x/text v0.3.8
+	golang.org/x/text => golang.org/x/text v0.5.0
 )
