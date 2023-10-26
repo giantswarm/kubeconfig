@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/giantswarm/microerror v0.4.0
 	github.com/giantswarm/micrologger v0.6.0
-	github.com/google/go-cmp v0.5.9
+	github.com/google/go-cmp v0.6.0
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.20.15
 	k8s.io/apimachinery v0.20.15
