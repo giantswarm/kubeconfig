@@ -55,7 +55,7 @@ replace (
 
 	// CVE-2023-3978
 	golang.org/x/net => golang.org/x/net v0.17.0
-	golang.org/x/text => golang.org/x/text v0.13.0
+	golang.org/x/text => golang.org/x/text v0.14.0
 	// CVE-2023-32731
 	google.golang.org/grpc => google.golang.org/grpc v1.59.0
 )
