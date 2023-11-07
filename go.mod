@@ -51,7 +51,7 @@ replace (
 	github.com/bketelsen/crypt => github.com/bketelsen/crypt v0.0.5
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	// Use v1.4.2 of gorilla/websocket to fix nancy alert.
-	github.com/gorilla/websocket => github.com/gorilla/websocket v1.5.0
+	github.com/gorilla/websocket => github.com/gorilla/websocket v1.5.1
 
 	// CVE-2023-3978
 	golang.org/x/net => golang.org/x/net v0.17.0
