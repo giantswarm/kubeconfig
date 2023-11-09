@@ -48,15 +48,8 @@ require (
 )
 
 replace (
-	// Apply fix for CVE-2020-15114 not yet released in github.com/spf13/viper.
-	github.com/bketelsen/crypt => github.com/bketelsen/crypt v0.0.5
-	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
-	// Use v1.4.2 of gorilla/websocket to fix nancy alert.
-	github.com/gorilla/websocket => github.com/gorilla/websocket v1.5.1
-
-	// CVE-2023-3978
+	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.5.0
 	golang.org/x/net => golang.org/x/net v0.18.0
 	golang.org/x/text => golang.org/x/text v0.14.0
-	// CVE-2023-32731
 	google.golang.org/grpc => google.golang.org/grpc v1.59.0
 )
