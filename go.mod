@@ -48,7 +48,7 @@ require (
 )
 
 replace (
-	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v5 v5.1.0
 	golang.org/x/net => golang.org/x/net v0.18.0
 	golang.org/x/text => golang.org/x/text v0.14.0
 	google.golang.org/grpc => google.golang.org/grpc v1.59.0
