@@ -51,5 +51,5 @@ replace (
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v5 v5.2.0
 	golang.org/x/net => golang.org/x/net v0.21.0
 	golang.org/x/text => golang.org/x/text v0.14.0
-	google.golang.org/grpc => google.golang.org/grpc v1.61.0
+	google.golang.org/grpc => google.golang.org/grpc v1.61.1
 )
