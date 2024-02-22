@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/giantswarm/microerror v0.4.1
-	github.com/giantswarm/micrologger v0.6.0
+	github.com/giantswarm/micrologger v1.1.1
 	github.com/google/go-cmp v0.6.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.20.15
@@ -15,8 +15,8 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/evanphx/json-patch v4.9.0+incompatible // indirect
-	github.com/go-kit/log v0.2.0 // indirect
-	github.com/go-logfmt/logfmt v0.5.1 // indirect
+	github.com/go-kit/log v0.2.1 // indirect
+	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
