@@ -48,7 +48,7 @@ require (
 )
 
 replace (
-	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v5 v5.2.0
+	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/go-logr/logr => github.com/go-logr/logr v0.4.0 // Pinned due to incompatiobility
 	golang.org/x/net => golang.org/x/net v0.22.0
 	golang.org/x/text => golang.org/x/text v0.14.0
