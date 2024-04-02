@@ -54,3 +54,5 @@ replace (
 	golang.org/x/text => golang.org/x/text v0.14.0
 	google.golang.org/grpc => google.golang.org/grpc v1.62.1
 )
+
+replace google.golang.org/protobuf v1.32.0 => google.golang.org/protobuf v1.33.0
