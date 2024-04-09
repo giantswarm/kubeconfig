@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.1] - 2024-04-09
+
 ## [4.1.0] - 2021-03-16
 
 ### Added
@@ -46,7 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/kubeconfig/compare/v4.1.0...HEAD
+[Unreleased]: https://github.com/giantswarm/kubeconfig/compare/v4.1.1...HEAD
+[4.1.1]: https://github.com/giantswarm/kubeconfig/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/giantswarm/kubeconfig/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/giantswarm/kubeconfig/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/giantswarm/kubeconfig/compare/v2.0.0...v3.0.0
