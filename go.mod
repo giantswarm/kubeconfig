@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/giantswarm/microerror v0.4.1
-	github.com/giantswarm/micrologger v0.6.0
+	github.com/giantswarm/micrologger v1.1.1
 	github.com/google/go-cmp v0.6.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.20.15
@@ -15,9 +15,9 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/evanphx/json-patch v4.9.0+incompatible // indirect
-	github.com/go-kit/log v0.2.0 // indirect
-	github.com/go-logfmt/logfmt v0.5.1 // indirect
-	github.com/go-logr/logr v1.4.1 // indirect
+	github.com/go-kit/log v0.2.1 // indirect
+	github.com/go-logfmt/logfmt v0.6.0 // indirect
+	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
@@ -40,7 +40,7 @@ require (
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
-	k8s.io/klog/v2 v2.4.0 // indirect
+	k8s.io/klog/v2 v2.120.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20211110013926-83f114cd0513 // indirect
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
@@ -49,7 +49,6 @@ require (
 
 replace (
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v5 v5.2.1
-	github.com/go-logr/logr => github.com/go-logr/logr v0.4.0 // Pinned due to incompatiobility
 	golang.org/x/net => golang.org/x/net v0.25.0
 	golang.org/x/text => golang.org/x/text v0.15.0
 	google.golang.org/grpc => google.golang.org/grpc v1.64.0
