@@ -1,6 +1,8 @@
 module github.com/giantswarm/kubeconfig/v4
 
-go 1.19
+go 1.21
+
+toolchain go1.22.4
 
 require (
 	github.com/giantswarm/microerror v0.4.1
@@ -31,13 +33,12 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/crypto v0.24.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/oauth2 v0.18.0 // indirect
+	golang.org/x/oauth2 v0.20.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/term v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
+	google.golang.org/protobuf v1.34.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	k8s.io/klog/v2 v2.120.1 // indirect
@@ -51,7 +52,7 @@ replace (
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v5 v5.2.1
 	golang.org/x/net => golang.org/x/net v0.26.0
 	golang.org/x/text => golang.org/x/text v0.16.0
-	google.golang.org/grpc => google.golang.org/grpc v1.64.0
+	google.golang.org/grpc => google.golang.org/grpc v1.65.0
 )
 
 replace google.golang.org/protobuf v1.32.0 => google.golang.org/protobuf v1.33.0
