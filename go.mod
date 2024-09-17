@@ -61,7 +61,7 @@ require (
 replace (
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v5 v5.2.1
 	golang.org/x/net => golang.org/x/net v0.29.0
-	golang.org/x/text => golang.org/x/text v0.17.0
+	golang.org/x/text => golang.org/x/text v0.18.0
 )
 
 replace google.golang.org/protobuf v1.32.0 => google.golang.org/protobuf v1.33.0
