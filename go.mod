@@ -9,9 +9,9 @@ require (
 	github.com/giantswarm/micrologger v1.1.1
 	github.com/google/go-cmp v0.6.0
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/api v0.31.3
-	k8s.io/apimachinery v0.31.3
-	k8s.io/client-go v0.31.3
+	k8s.io/api v0.31.4
+	k8s.io/apimachinery v0.31.4
+	k8s.io/client-go v0.31.4
 )
 
 require (
