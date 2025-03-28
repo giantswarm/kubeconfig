@@ -69,7 +69,7 @@ func NewKubeConfigForRESTConfig(ctx context.Context, config *rest.Config, cluste
 				Name: clusterName,
 				Cluster: KubeconfigCluster{
 					Server:                   config.Host,
-					CertificateAuthorityData: base64.StdEncoding.EncodeToString(config.TLSClientConfig.CAData),
+					CertificateAuthorityData: base64.StdEncoding.EncodeToString(config.CAData),
 				},
 			},
 		},
