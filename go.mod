@@ -2,7 +2,7 @@ module github.com/giantswarm/kubeconfig/v4
 
 go 1.25.0
 
-toolchain go1.25.6
+toolchain go1.25.7
 
 require (
 	github.com/giantswarm/microerror v0.4.1
