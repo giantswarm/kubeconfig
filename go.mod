@@ -60,3 +60,7 @@ replace (
 	golang.org/x/text => golang.org/x/text v0.36.0
 	google.golang.org/protobuf v1.32.0 => google.golang.org/protobuf v1.33.0
 )
+
+replace golang.org/x/sys v0.43.0 => golang.org/x/sys v0.45.0
+
+replace golang.org/x/crypto v0.50.0 => golang.org/x/crypto v0.53.0
